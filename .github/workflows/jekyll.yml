@@ -11,7 +11,7 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -43,6 +43,13 @@ jobs:
       - name: Minify JS files
         run: |
           uglifyjs assets/js/plugins/jquery.greedy-navigation.js assets/js/_main.js assets/js/theme.js -c -m -o assets/js/main.min.js
+      - name: Create Pages site via API
+        run: |
+          curl -L -f -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/PebbleSenseiMarket/LJT-Homepage/pages \
+            -d '{"source":{"branch":"master","path":"/"}}'
       - name: Configure GitHub Pages
         id: pages
         uses: actions/configure-pages@v6.0.0
